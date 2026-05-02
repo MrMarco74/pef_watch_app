@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEF Apple Watch Native App — Anforderungsdokument</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --accent3: #f0883e;
+      --accent4: #bc8cff;
+      --red: #ff4d4d;
+      --code-bg: #1e2530;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+    nav {
+      width: 260px;
+      min-width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    nav .logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    nav .logo h2 { font-size: 14px; color: var(--accent); font-weight: 600; }
+    nav .logo p { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    nav ul { list-style: none; padding: 0 8px; }
+    nav ul li a {
+      display: block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    nav ul li a:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
+    nav ul li.section-header {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 12px 12px 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    main {
+      flex: 1;
+      padding: 48px;
+      max-width: 50%;
+    }
+
+    /* Header */
+    .doc-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 32px;
+      margin-bottom: 40px;
+    }
+    .doc-header .badge {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .doc-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .doc-header p { color: var(--text-muted); font-size: 16px; max-width: 640px; }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .meta-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+    .meta-item .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .meta-item .value { font-size: 14px; font-weight: 600; margin-top: 4px; }
+
+    /* Typography */
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 48px 0 16px;
+      color: var(--text);
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      scroll-margin-top: 80px;
+    }
+    h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--text);
+      scroll-margin-top: 80px;
+    }
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    p { margin-bottom: 14px; color: var(--text); }
+    ul, ol { padding-left: 20px; margin-bottom: 14px; }
+    li { margin-bottom: 6px; color: var(--text); }
+    strong { color: var(--text); font-weight: 600; }
+
+    /* Code */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      margin: 16px 0 24px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    code {
+      font-family: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+      font-size: 13px;
+    }
+    p code, li code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 12px;
+      color: var(--accent3);
+    }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; margin: 16px 0 24px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: var(--surface);
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+
+    /* Callouts */
+    .callout {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-left: 3px solid;
+      display: flex;
+      gap: 12px;
+    }
+    .callout.info { background: rgba(88,166,255,0.08); border-color: var(--accent); }
+    .callout.warning { background: rgba(240,136,62,0.08); border-color: var(--accent3); }
+    .callout.success { background: rgba(63,185,80,0.08); border-color: var(--accent2); }
+    .callout.danger { background: rgba(255,77,77,0.08); border-color: var(--red); }
+    .callout-icon { font-size: 18px; flex-shrink: 0; }
+    .callout-body { font-size: 14px; }
+    .callout-body strong { display: block; margin-bottom: 4px; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      font-family: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--text-muted);
+      margin: 16px 0 24px;
+    }
+    .arch-diagram .highlight { color: var(--accent); }
+    .arch-diagram .highlight2 { color: var(--accent2); }
+    .arch-diagram .highlight3 { color: var(--accent3); }
+
+    /* Watch mockup */
+    .watch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 20px 0 28px;
+    }
+    .watch-mockup {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 36px;
+      padding: 20px 16px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .watch-mockup h4 { color: var(--text-muted); font-size: 11px; margin: 0 0 12px; text-align: center; text-transform: uppercase; letter-spacing: 0.1em; }
+    .watch-button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px; }
+    .watch-btn {
+      border-radius: 10px;
+      padding: 16px 8px 8px;
+      font-size: 10px;
+      text-align: center;
+      background: #222;
+      border: 1px solid #333;
+    }
+    .watch-btn .icon { font-size: 20px; display: block; margin-bottom: 4px; }
+    .watch-btn .icon img { width: 40px; height: 40px; object-fit: contain; display: block; margin: 0 auto; }
+    .watch-btn.active { background: #1a1a2e; border-color: #ff4d4d; box-shadow: 0 0 10px rgba(255,77,77,0.5); }
+    .watch-submit { background: #0055aa; border-radius: 10px; padding: 12px; text-align: center; font-size: 12px; font-weight: bold; color: white; grid-column: span 2; }
+
+    /* Phase badges */
+    .phase-list { list-style: none; padding: 0; }
+    .phase-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .phase-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .phase-content h4 { font-size: 14px; margin: 0 0 6px; color: var(--text); }
+    .phase-content p { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+    /* Checklist */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "☐";
+      color: var(--text-muted);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+      nav { display: none; }
+      main { padding: 24px 20px; }
+      .doc-header h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar Navigation -->
+  <nav>
+    <div class="logo">
+      <h2>⌚ WatchLogger</h2>
+      <p>Anforderungsdokument v1.0</p>
+    </div>
+    <ul>
+      <li class="section-header">Überblick</li>
+      <li><a href="#kontext">1. Kontext &amp; Motivation</a></li>
+      <li><a href="#architektur">2. Architektur</a></li>
+      <li class="section-header">Anforderungen</li>
+      <li><a href="#konfiguration">3. Konfiguration</a></li>
+      <li><a href="#sensoren">4. Sensor-Erfassung</a></li>
+      <li><a href="#eingabe">5. Manuelle Eingabe</a></li>
+      <li><a href="#payload">6. Payload &amp; REST</a></li>
+      <li><a href="#complications">7. Complications</a></li>
+      <li><a href="#notifications">8. Notifications</a></li>
+      <li><a href="#datenschutz">9. Datenschutz</a></li>
+      <li class="section-header">Implementierung</li>
+      <li><a href="#ui">10. UI/UX</a></li>
+      <li><a href="#build">11. Build &amp; Deploy</a></li>
+      <li><a href="#backend">12. Backend-Integration</a></li>
+      <li><a href="#roadmap">13. Roadmap</a></li>
+      <li><a href="#fragen">14. Offene Fragen</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Header -->
+    <div class="doc-header">
+      <div class="badge">Community RFC · Open Source (in Entwicklung)</div>
+      <h1>PEF Apple Watch Native App<br><span style="color:var(--text-muted); font-weight:400">WatchLogger — Universeller Sensor-Logger für watchOS</span></h1>
+      <p>Eine native watchOS-App zur automatischen Symptomerkennung und manuellen Eingabe — entwickelt für Parkinson-Monitoring, aber <strong>bewusst so gebaut, dass sie jeden beliebigen REST-Endpoint ansprechen kann</strong>. Endpoint-URL, Auth-Header und Metrik-Mapping sind vollständig per JSON-Config steuerbar — kein PEF erforderlich.</p>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="label">Version</div><div class="value">1.0</div></div>
+        <div class="meta-item"><div class="label">Datum</div><div class="value">2026-05-02</div></div>
+        <div class="meta-item"><div class="label">Plattform</div><div class="value">watchOS 10+</div></div>
+        <div class="meta-item"><div class="label">Sprache</div><div class="value">Swift 5.9+</div></div>
+        <div class="meta-item"><div class="label">Lizenz</div><div class="value">MIT (nach Veröffentlichung)</div></div>
+        <div class="meta-item"><div class="label">Status</div><div class="value" style="color:var(--accent3)">Privat in Entwicklung · RFC</div></div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-icon">🙋</div>
+      <div class="callout-body">
+        <strong>Wir suchen Contributor!</strong>
+        Dieses Dokument ist eine Anforderungsspezifikation für eine native watchOS-App. Die App wird bewusst als universeller REST-Logger gebaut — nicht als PEF-exklusives Tool. Jeder der einen REST-Endpoint betreibt soll sie nutzen können. Der Autor hat kein macOS-Gerät — wir suchen Swift/watchOS-Entwickler die das Projekt umsetzen oder dazu beitragen möchten.
+      </div>
+    </div>
+
+    <!-- 1. Kontext -->
+    <h2 id="kontext">1. Projektkontext &amp; Motivation</h2>
+
+    <h3>1.1 Ausgangssituation</h3>
+    <p>Das PEF-Projekt (<em>Parkinson Erfassungs-Frontend</em>) ist eine Webanwendung zur Erfassung von Parkinson-Symptomen, die als Open-Source veröffentlicht werden soll — die Entwicklung findet aktuell noch in einem privaten Repository statt. Das Backend basiert auf FastAPI + PostgreSQL, das Frontend auf Vanilla JavaScript. Für die Erfassung direkt am Handgelenk existiert eine Progressive Web App (PWA) unter <code>/watch/</code>.</p>
+
+    <p><strong>Limitierungen der aktuellen PWA-Lösung:</strong></p>
+    <ul>
+      <li>Kein nativer Zugriff auf CoreMotion (Accelerometer, Gyroscope mit voller Auflösung)</li>
+      <li>Kein HealthKit-Zugriff aus dem Browser</li>
+      <li>Keine Background-Tasks — App muss aktiv geöffnet sein</li>
+      <li>Keine Watch-Face-Complications</li>
+      <li>Safari existiert auf watchOS nicht — die PWA läuft nur auf dem iPhone</li>
+      <li>Kein haptisches Feedback mit erweiterten Patterns</li>
+    </ul>
+
+    <h3>1.2 Ziele</h3>
+    <ul>
+      <li>Symptome <strong>passiv erkennen</strong> (Tremor, Gangbild, HRV) ohne Nutzerinteraktion</li>
+      <li>Manuelle Eingaben per <strong>Sprache oder Touch</strong> ermöglichen</li>
+      <li><strong>Vollständig konfigurierbar</strong> — Endpoint, Auth, Metriken, Button-Labels per JSON</li>
+      <li><strong>PEF-unabhängig</strong> — generischer Sensor-Logger für beliebige REST-Backends</li>
+      <li><strong>Offline-fähig</strong> — lokaler Puffer, automatische Synchronisation</li>
+      <li><strong>Open Source</strong> — wird nach MVP als Community-Projekt unter MIT-Lizenz veröffentlicht (aktuell private Entwicklung)</li>
+    </ul>
+
+    <div class="callout info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>Kernidee</strong>
+        Statt "Patient muss aktiv 4 Buttons tippen" → "Watch erkennt Tremor-Episode automatisch, fragt kurz nach Bestätigung, loggt selbstständig." Das ist der eigentliche Mehrwert gegenüber der PWA.
+      </div>
+    </div>
+
+    <!-- 2. Architektur -->
+    <h2 id="architektur">2. Architektur-Überblick</h2>
+
+    <div class="arch-diagram">
+<span class="highlight">┌─────────────────────────────────────┐</span>
+<span class="highlight">│           Apple Watch               │</span>
+│                                     │
+│  ┌─────────┐  ┌──────────────────┐  │
+│  │ <span class="highlight">SwiftUI</span> │  │   <span class="highlight2">CoreMotion</span>     │  │
+│  │   UI    │  │   <span class="highlight2">HealthKit</span>      │  │
+│  │         │  │ <span class="highlight2">SFSpeechRec.</span>    │  │
+│  └────┬────┘  └────────┬─────────┘  │
+│       │               │            │
+│  ┌────▼───────────────▼─────────┐  │
+│  │     <span class="highlight">WatchLogger Core</span>         │  │
+│  │  - SensorManager             │  │
+│  │  - EventQueue (SwiftData)    │  │
+│  │  - ConfigStore (Keychain)    │  │
+│  │  - TremorDetector (FFT/ML)   │  │
+│  └────────────────┬─────────────┘  │
+│                   │                │
+│  ┌────────────────▼─────────────┐  │
+│  │     <span class="highlight3">SyncEngine</span>               │  │
+│  │  - URLSession (Background)   │  │
+│  │  - RetryQueue                │  │
+│  │  - OfflineBuffer             │  │
+│  └──────────────────────────────┘  │
+<span class="highlight">└─────────────────────────────────────┘</span>
+           │  WatchConnectivity
+           ▼
+<span class="highlight2">┌─────────────────────────────────────┐</span>
+<span class="highlight2">│           iPhone (Companion)        │</span>
+│  - AltStore PAL (EU, kostenlos)    │
+│  - Konfiguration via QR-Code       │
+│  - Config-Transfer zur Watch       │
+<span class="highlight2">└──────────────────┬──────────────────┘</span>
+                   │  HTTPS/REST
+                   ▼
+<span class="highlight3">┌─────────────────────────────────────┐</span>
+<span class="highlight3">│         REST Backend                │</span>
+│  z.B. PEF: POST /api/health/webhook│
+│  oder beliebiger anderer Endpoint  │
+<span class="highlight3">└─────────────────────────────────────┘</span>
+    </div>
+
+    <h3>Technologie-Stack</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Schicht</th><th>Technologie</th><th>Begründung</th></tr></thead>
+        <tbody>
+          <tr><td>UI</td><td>SwiftUI</td><td>Native watchOS, kein UIKit-Overhead</td></tr>
+          <tr><td>Datenpersistenz</td><td>SwiftData</td><td>Swift-native, kein Core Data Boilerplate</td></tr>
+          <tr><td>Sensoren</td><td>CoreMotion, HealthKit</td><td>Einzige Option für Watch-Sensorzugriff</td></tr>
+          <tr><td>Sprache</td><td>SFSpeechRecognizer</td><td>On-device, kein Internet, watchOS 10+</td></tr>
+          <tr><td>Netzwerk</td><td>URLSession Background</td><td>Sync auch wenn App im Hintergrund</td></tr>
+          <tr><td>Konfiguration</td><td>Keychain + SwiftData</td><td>Token sicher, Config persistiert</td></tr>
+          <tr><td>Build-CI</td><td>GitHub Actions macOS-14</td><td>Kein eigener Mac notwendig</td></tr>
+          <tr><td>Installation</td><td>AltStore PAL (EU)</td><td>Kostenlos, kein 99€/Jahr Developer Account</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. Konfiguration -->
+    <h2 id="konfiguration">3. Konfiguration</h2>
+
+    <p>Die App ist vollständig über eine JSON-Konfiguration steuerbar. Kein Hard-Coding von Endpoints oder Credentials.</p>
+
+    <h3>3.1 Config-Schema</h3>
+    <pre><code>{
+  "version": 1,
+  "app_name": "PEF Logger",
+  "endpoint": {
+    "url": "https://mein-server.de/api/logs/watch",
+    "method": "POST",
+    "headers": {
+      "X-Health-Token": "abc123",
+      "Content-Type": "application/json"
+    },
+    "timeout_s": 15,
+    "retry_max": 5,
+    "retry_backoff_s": 30
+  },
+  "sensors": {
+    "tremor_detection": true,
+    "gait_analysis": true,
+    "hrv_passive": true,
+    "heart_rate_continuous": false,
+    "spo2_on_demand": true,
+    "pedometer": true,
+    "background_sampling_interval_s": 300
+  },
+  "ui": {
+    "buttons": [
+      {
+        "id": "offtime",
+        "label": "Off-Phase",
+        "icon": "waveform.path.ecg",
+        "color": "#FF4D4D",
+        "haptic": "notification"
+      },
+      {
+        "id": "medication",
+        "label": "Medikament",
+        "icon": "pills.fill",
+        "color": "#4D94FF",
+        "haptic": "success"
+      }
+    ],
+    "speech_enabled": true,
+    "speech_commands": {
+      "medication": ["medikament", "pille", "medication"]
+    },
+    "quick_confirm_timeout_s": 3,
+    "theme": "dark"
+  },
+  "privacy": {
+    "store_raw_motion": false,
+    "anonymize_location": true,
+    "local_only_mode": false
+  }
+}</code></pre>
+
+    <h3>3.2 Config-Übertragung (3 Wege)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Methode</th><th>Beschreibung</th><th>Empfohlen für</th></tr></thead>
+        <tbody>
+          <tr><td>📷 QR-Code</td><td>iPhone-Companion scannt QR mit Base64-encoded Config-JSON</td><td>Ersteinrichtung</td></tr>
+          <tr><td>📱 WatchConnectivity</td><td><code>WCSession.transferUserInfo()</code> vom iPhone zur Watch</td><td>Updates, Änderungen</td></tr>
+          <tr><td>🎤 Diktat</td><td>URL + Token per Spracheingabe direkt auf der Watch</td><td>Fallback, Notfall</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 PEF Pairing-Flow</h3>
+    <p>Kompatibel mit dem bestehenden PEF-Pairing-System:</p>
+    <ol>
+      <li>Watch zeigt 8-stelligen Nonce-Code (<code>GET /api/auth/pairing/request-nonce</code>)</li>
+      <li>Nutzer gibt Code im PEF-Webinterface ein (<code>POST /api/auth/pairing/link-token</code>)</li>
+      <li>PEF-Backend gibt JWT zurück</li>
+      <li>Watch speichert Token im Keychain, alle folgenden Requests mit <code>Authorization: Bearer</code></li>
+    </ol>
+
+    <!-- 4. Sensoren -->
+    <h2 id="sensoren">4. Sensor-Datenerfassung</h2>
+
+    <h3>4.1 Tremor-Erkennung</h3>
+    <p>Automatische Erkennung von Parkinson-typischem Ruhetremor (4–6 Hz) ohne Nutzerinteraktion.</p>
+
+    <div class="arch-diagram">
+CoreMotion → Accelerometer (100Hz) → Ringpuffer (512 Samples / 5s)
+  → FFT (vDSP_fft_zrip, 256 Punkte)
+  → Frequenzband-Analyse (3–8 Hz)
+  → Peak bei 4–6 Hz AND Amplitude &gt; 0.15g
+  → Tremor-Event mit Confidence-Score (0.0–1.0)
+    </div>
+
+    <p><strong>Hysterese:</strong> Tremor-Start wenn 3 aufeinanderfolgende FFT-Frames über Schwellwert; Tremor-Ende wenn 5 Frames darunter.</p>
+
+    <p><strong>Unterscheidung:</strong> 4–6 Hz = Parkinson-Ruhetremor; 8–12 Hz = Essentieller Tremor — beide erkennbar und unterscheidbar im Frequenzspektrum.</p>
+
+    <pre><code>// Output-Event
+{
+  "type": "tremor_detected",
+  "started_at": "2026-05-02T10:15:30Z",
+  "ended_at": "2026-05-02T10:15:45Z",
+  "duration_s": 15,
+  "dominant_frequency_hz": 4.8,
+  "mean_amplitude": 0.23,
+  "confidence": 0.87
+}</code></pre>
+
+    <div class="callout info">
+      <div class="callout-icon">🔬</div>
+      <div class="callout-body">
+        <strong>Phase 2: Create ML</strong>
+        Ein <code>MLActivityClassifier</code> mit labeled Trainingsdaten kann die FFT-Erkennung ersetzen und zwischen <code>rest_tremor</code>, <code>action_tremor</code>, <code>walking</code> und <code>other_motion</code> unterscheiden — vollständig on-device.
+      </div>
+    </div>
+
+    <h3>4.2 Gang-Analyse</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Metrik</th><th>Quelle</th><th>Parkinson-Relevanz</th></tr></thead>
+        <tbody>
+          <tr><td>Schrittlänge</td><td>CMPedometer</td><td>Verkürzung = Bradykinese-Indikator</td></tr>
+          <tr><td>Gehgeschwindigkeit</td><td>CMPedometer</td><td>Verlangsamung = häufiges Frühsymptom</td></tr>
+          <tr><td>Asymmetrie %</td><td>CMDeviceMotion</td><td>Seitigkeits-Unterschied zwischen Schritten</td></tr>
+          <tr><td>Doppelstand-Zeit %</td><td>CMDeviceMotion</td><td>Erhöht = Gleichgewichtsprobleme</td></tr>
+          <tr><td>Steadiness-Score</td><td>CMDeviceMotion (Jerk)</td><td>Unregelmäßigkeit des Gangs</td></tr>
+          <tr><td>Treppensteig-Geschwindigkeit</td><td>CMPedometer</td><td>Funktioneller Mobilitätstest</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>4.3 Herzratenvariabilität (HRV)</h3>
+    <ul>
+      <li><strong>Passiv:</strong> <code>HKObserverQuery</code> — Watch weckt App wenn neue HRV-Messung vorliegt (typisch nachts), kein Nutzereingriff</li>
+      <li><strong>Aktiv:</strong> <code>HKWorkoutSession</code> für 5-Minuten On-demand-Messung, per Button triggerbar</li>
+    </ul>
+
+    <h3>4.4 Hintergrund-Sampling</h3>
+    <p>Alle 5 Minuten (konfigurierbar) werden automatisch erfasst und in die lokale Queue geschrieben:</p>
+    <ul>
+      <li>Ruhepuls, Aktivitätsklasse, aktueller Tremor-Score, Schritte letzte Stunde</li>
+      <li>SpO2 (Series 6+), Umgebungsgeräuschpegel (optional)</li>
+    </ul>
+
+    <!-- 5. Eingabe -->
+    <h2 id="eingabe">5. Manuelle Eingabe</h2>
+
+    <h3>5.1 Touch-Interface</h3>
+    <div class="watch-grid">
+      <div class="watch-mockup">
+        <h4>Hauptscreen</h4>
+        <div class="watch-button-grid">
+          <div class="watch-btn active"><span class="icon"><img src="pef_pwa/images/tremor_on.png" alt="Off-Phase"></span>Off-Phase</div>
+          <div class="watch-btn"><span class="icon"><img src="pef_pwa/images/meds_off.png" alt="Medikament"></span>Medikament</div>
+          <div class="watch-btn"><span class="icon"><img src="pef_pwa/images/stress_off.png" alt="Stress"></span>Stress</div>
+          <div class="watch-btn"><span class="icon"><img src="pef_pwa/images/tired_off.png" alt="Müdigkeit"></span>Müdigkeit</div>
+          <div class="watch-submit">Absenden</div>
+        </div>
+      </div>
+      <div class="watch-mockup">
+        <h4>Sensor-Status</h4>
+        <div style="font-size:11px; line-height:2">
+          🫀 HF: 68 bpm<br>
+          📊 HRV: 42 ms<br>
+          🩸 SpO2: 97%<br>
+          👣 Heute: 4.231<br>
+          〰 Tremor: Keiner<br>
+          <br>
+          Queue: 0 pending<br>
+          Sync: vor 2 Min
+        </div>
+      </div>
+    </div>
+
+    <ul>
+      <li>Toggle-Verhalten: aktiv/inaktiv mit visuellem + haptischem Feedback</li>
+      <li><strong>Double-Tap</strong> (Series 9 / Ultra 2): Schnellerfassung des letzten Buttons</li>
+      <li>Konfigurierbare Buttons: ID, Label, SF Symbol Icon, Farbe, Haptic-Typ</li>
+    </ul>
+
+    <h3>5.2 Spracheingabe</h3>
+    <p><code>SFSpeechRecognizer</code> mit <code>.deviceConstrained</code> Modus — kein Internet erforderlich, Latenz &lt; 500ms.</p>
+    <ol>
+      <li>Nutzer hebt Handgelenk oder tippt Mikrofon-Icon</li>
+      <li>On-device Transkription läuft</li>
+      <li>Intent-Matching gegen konfigurierbare Keyword-Listen</li>
+      <li>3-Sekunden-Bestätigungsfenster vor automatischem Senden (mit Cancel)</li>
+    </ol>
+
+    <!-- 6. Payload -->
+    <h2 id="payload">6. Daten-Payload &amp; REST-Integration</h2>
+
+    <h3>6.1 Standard-Payload</h3>
+    <pre><code>{
+  "schema_version": "1.0",
+  "source": "watchlogger",
+  "device": {
+    "model": "Apple Watch Series 9",
+    "os": "watchOS 10.3",
+    "app_version": "1.0.0"
+  },
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "captured_at": "2026-05-02T10:15:30Z",
+  "timezone": "Europe/Berlin",
+  "events": [
+    {
+      "type": "button",
+      "timestamp": "2026-05-02T10:15:30Z",
+      "payload": { "button_id": "medication", "active": true, "input_method": "touch" }
+    },
+    {
+      "type": "tremor_detected",
+      "timestamp": "2026-05-02T10:14:00Z",
+      "payload": { "duration_s": 22, "dominant_frequency_hz": 5.1, "confidence": 0.91 }
+    },
+    {
+      "type": "speech",
+      "timestamp": "2026-05-02T10:15:28Z",
+      "payload": { "transcript": "Medikament genommen", "matched_intent": "medication", "confidence": 0.96 }
+    }
+  ],
+  "metrics_snapshot": {
+    "heart_rate_bpm": 68,
+    "hrv_sdnn_ms": 42.3,
+    "spo2_pct": 97.0,
+    "steps_last_hour": 412,
+    "tremor_score": 0.12,
+    "activity": "stationary"
+  }
+}</code></pre>
+
+    <h3>6.2 PEF-Kompatibilitätsmodus</h3>
+    <p>Bei konfiguriertem PEF-Flag sendet die App zusätzlich das <strong>Health Auto Export Format</strong> an <code>POST /api/health/webhook</code> — kompatibel mit dem bestehenden Webhook-Endpoint:</p>
+    <pre><code>POST /api/health/webhook
+X-Health-Token: &lt;token&gt;
+
+{
+  "data": {
+    "metrics": [
+      { "name": "step_count", "units": "count",
+        "data": [{"date": "2026-05-02 10:00:00 +0200", "qty": 412, "source": "WatchLogger"}] }
+    ]
+  }
+}</code></pre>
+
+    <h3>6.3 Offline-Queue</h3>
+    <ul>
+      <li>Alle Events zuerst lokal in SwiftData — Sync sofort wenn Netz verfügbar</li>
+      <li>Retry: exponentielles Backoff (30s → 60s → 120s → 300s → 600s)</li>
+      <li>Max Queue: 10.000 Events; bei Überlauf werden älteste verworfen (FIFO)</li>
+      <li>Queue-Status sichtbar in Complication und App-Status-Bar</li>
+    </ul>
+
+    <!-- 7. Complications -->
+    <h2 id="complications">7. Watch-Face Complications</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Typ</th><th>Inhalt</th><th>Slot</th></tr></thead>
+        <tbody>
+          <tr><td>Corner</td><td>Letzter Symptom-Log Zeitstempel</td><td>Corner</td></tr>
+          <tr><td>Modular Small</td><td>Tremor-Score als Gauge (0–1)</td><td>Modular</td></tr>
+          <tr><td>Circular Small</td><td>App-Icon + Badge (ungesendete Events)</td><td>Circular</td></tr>
+          <tr><td>Graphic Bezel</td><td>"Kein Tremor · 4.231 Schritte"</td><td>Graphic Bezel</td></tr>
+          <tr><td>Smart Stack Widget</td><td>Letzter Log, Tremor-Score, Schritte, Medication-Status</td><td>Smart Stack</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 8. Notifications -->
+    <h2 id="notifications">8. Benachrichtigungen &amp; Reminder</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Trigger</th><th>Notification</th></tr></thead>
+        <tbody>
+          <tr><td>Medikamentenzeit (konfigurierbar)</td><td>💊 "Medikament fällig" → Tap öffnet App, Medication-Button vorselektiert</td></tr>
+          <tr><td>Tremor &gt; 30s erkannt</td><td>Stille Hintergrunderfassung, kein Alert</td></tr>
+          <tr><td>Tremor &gt; 120s ohne Bestätigung</td><td>Optionaler Alert: "Tremor-Episode erkannt. Alles ok?"</td></tr>
+          <tr><td>Kein Log seit 8h (Wachzeit)</td><td>"Kein Symptom-Log heute"</td></tr>
+          <tr><td>Queue &gt; 50 Events</td><td>"Keine Verbindung — N Events ausstehend"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 9. Datenschutz -->
+    <h2 id="datenschutz">9. Datenschutz &amp; Sicherheit</h2>
+
+    <div class="callout success">
+      <div class="callout-icon">🔒</div>
+      <div class="callout-body">
+        <strong>Privacy by Design</strong>
+        Keine Third-Party-SDKs, keine Analytics, keine Crash-Reporter die Daten senden. Alle Sensordaten verlassen das Gerät nur an den explizit konfigurierten Endpoint.
+      </div>
+    </div>
+
+    <ul>
+      <li><code>privacy.local_only_mode: true</code> speichert ausschließlich lokal, kein Remote-Send</li>
+      <li><code>privacy.store_raw_motion: false</code> (Default): nur aggregierte Metriken, keine Roh-Accelerometer-Daten</li>
+      <li>Token und Konfiguration im <strong>watchOS Keychain</strong>, nicht in UserDefaults</li>
+      <li>TLS 1.2+ erzwungen, Certificate Pinning optional konfigurierbar</li>
+      <li>HealthKit-Berechtigungen granular — nur angeforderte Typen</li>
+      <li>DSGVO-konform: kein Nutzer-Tracking, keine persistente Geräte-ID</li>
+    </ul>
+
+    <!-- 10. UI/UX -->
+    <h2 id="ui">10. UI/UX Anforderungen</h2>
+
+    <h3>Design-Prinzipien</h3>
+    <ul>
+      <li><strong>Black/Dark-Mode first:</strong> OLED-Display, maximale Akku-Ersparnis</li>
+      <li><strong>Touch-Targets:</strong> mindestens 44×44pt (Apple HIG watchOS konform)</li>
+      <li><strong>Sofort-Start:</strong> bei vorhandenem Token kein Splash, direkt Buttons zeigen</li>
+      <li><strong>Haptik:</strong> <code>.click</code> beim Toggle, <code>.success</code> beim Senden, <code>.notification</code> bei Tremor-Erkennung</li>
+    </ul>
+
+    <h3>Projektstruktur</h3>
+    <pre><code>WatchLogger/
+├── WatchLogger.xcodeproj
+├── WatchLoggerApp/              ← iOS Companion App
+│   ├── Views/
+│   │   ├── ConfigView.swift     ← QR-Scanner, manuelle Eingabe
+│   │   └── StatusView.swift     ← Sync-Status, Queue-Übersicht
+│   └── Services/
+│       ├── WatchConnectivityService.swift
+│       └── QRCodeParser.swift
+├── WatchLoggerWatch/            ← watchOS Extension
+│   ├── Views/
+│   │   ├── MainView.swift       ← 2×2 Grid
+│   │   ├── PairingView.swift
+│   │   ├── SensorStatusView.swift
+│   │   └── SpeechInputView.swift
+│   ├── Core/
+│   │   ├── SensorManager.swift
+│   │   ├── TremorDetector.swift ← FFT (vDSP)
+│   │   ├── GaitAnalyzer.swift
+│   │   ├── SpeechManager.swift
+│   │   ├── EventQueue.swift     ← SwiftData
+│   │   └── SyncEngine.swift     ← URLSession Background
+│   ├── Config/
+│   │   ├── ConfigStore.swift    ← Keychain + SwiftData
+│   │   └── ConfigSchema.swift
+│   └── Complications/
+│       └── WatchLoggerComplication.swift
+├── Shared/
+│   └── PayloadSchema.swift
+└── .github/workflows/build.yml</code></pre>
+
+    <!-- 11. Build -->
+    <h2 id="build">11. Build &amp; Deployment</h2>
+
+    <h3>GitHub Actions Workflow</h3>
+    <pre><code># .github/workflows/build.yml
+name: Build WatchLogger IPA
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      - name: Import Signing Certificate
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.CERTIFICATE_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$CERTIFICATE_BASE64" | base64 --decode > cert.p12
+          security import cert.p12 -k ~/Library/Keychains/login.keychain \
+            -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+      - name: Build Archive
+        run: |
+          xcodebuild archive \
+            -project WatchLogger.xcodeproj \
+            -scheme WatchLogger \
+            -archivePath build/WatchLogger.xcarchive \
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}
+      - name: Export IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build/WatchLogger.xcarchive \
+            -exportPath build/ \
+            -exportOptionsPlist ExportOptions.plist
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: WatchLogger-IPA
+          path: build/*.ipa
+          retention-days: 30</code></pre>
+
+    <h3>Installation via AltStore PAL (EU, kostenlos)</h3>
+    <ol>
+      <li>AltStore PAL aus dem App Store installieren (kostenlos in der EU seit DMA 2024)</li>
+      <li>AltServer auf einem Windows-PC oder Mac installieren (einmalig)</li>
+      <li>IPA-Artifact von GitHub Actions herunterladen</li>
+      <li>In AltStore PAL: "+" → IPA auswählen → Installieren</li>
+      <li>AltStore erneuert das Zertifikat automatisch solange AltServer im WLAN läuft</li>
+    </ol>
+
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Kein 99€/Jahr Apple Developer Account nötig</strong>
+        Mit einem kostenlosen Apple ID + AltStore PAL (EU) ist das Sideloading dauerhaft kostenlos. Das Zertifikat muss alle 7 Tage erneuert werden — AltStore PAL macht das automatisch im Hintergrund.
+      </div>
+    </div>
+
+    <!-- 12. Backend -->
+    <h2 id="backend">12. Backend-Integration (PEF)</h2>
+
+    <h3>Bestehende Endpoints</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Method</th><th>Auth</th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/auth/pairing/request-nonce</code></td><td>GET</td><td>—</td><td>Generiert 8-stelligen Pairing-Code</td></tr>
+          <tr><td><code>/api/auth/pairing/status?nonce=X</code></td><td>GET</td><td>—</td><td>Polling auf Pairing-Abschluss</td></tr>
+          <tr><td><code>/api/auth/pairing/link-token</code></td><td>POST</td><td>JWT</td><td>Nutzer bestätigt Pairing im Web</td></tr>
+          <tr><td><code>/api/logs</code></td><td>POST</td><td>Bearer</td><td>Symptom-Log senden</td></tr>
+          <tr><td><code>/api/health/webhook</code></td><td>POST</td><td>X-Health-Token</td><td>Health Auto Export kompatibles Push-Format</td></tr>
+          <tr><td><code>/api/status</code></td><td>GET</td><td>Bearer</td><td>Session-Validierung</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Neuer Endpoint (zu implementieren)</h3>
+    <pre><code>POST /api/logs/watch
+Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
+
+→ Schreibt in:
+  - health.symptom_logs (Button-Events)
+  - health.tremor_events (neue Tabelle, siehe unten)
+  - health.hkq_* (Metriken-Snapshots)
+
+Response: {"status": "ok", "events_accepted": 3}</code></pre>
+
+    <pre><code>-- Neue DB-Tabelle
+CREATE TABLE health.tremor_events (
+    id                SERIAL PRIMARY KEY,
+    started_at        TIMESTAMPTZ NOT NULL,
+    ended_at          TIMESTAMPTZ,
+    duration_s        FLOAT,
+    dominant_freq_hz  FLOAT,
+    mean_amplitude    FLOAT,
+    confidence        FLOAT,
+    source            TEXT DEFAULT 'watchlogger',
+    raw_payload       JSONB
+);
+CREATE INDEX ON health.tremor_events (started_at);</code></pre>
+
+    <!-- 13. Roadmap -->
+    <h2 id="roadmap">13. Entwicklungs-Roadmap</h2>
+
+    <ul class="phase-list">
+      <li class="phase-item">
+        <div class="phase-badge">Phase 1<br>MVP</div>
+        <div class="phase-content">
+          <h4>Grundfunktion (4–6 Wochen)</h4>
+          <p>Xcode-Projektstruktur, SwiftUI UI, PEF Pairing-Flow, POST /api/logs, Offline-Queue, GitHub Actions Build-Pipeline, AltStore-kompatible IPA</p>
+        </div>
+      </li>
+      <li class="phase-item">
+        <div class="phase-badge">Phase 2<br>Sensoren</div>
+        <div class="phase-content">
+          <h4>Sensor-Integration (4–6 Wochen)</h4>
+          <p>CoreMotion Tremor-Erkennung (FFT), CMPedometer Gang-Metriken, HealthKit passiv (HRV, Puls), Background Sensor Sampling, Watch-Payload Format</p>
+        </div>
+      </li>
+      <li class="phase-item">
+        <div class="phase-badge">Phase 3<br>UX</div>
+        <div class="phase-content">
+          <h4>UX &amp; Features (3–4 Wochen)</h4>
+          <p>Spracheingabe (SFSpeechRecognizer), Watch-Face Complications, Smart Stack Widget, QR-Code Konfiguration, Notification/Reminder System</p>
+        </div>
+      </li>
+      <li class="phase-item">
+        <div class="phase-badge">Phase 4<br>OSS</div>
+        <div class="phase-content">
+          <h4>Generalisierung &amp; Open-Source-Veröffentlichung (2–3 Wochen)</h4>
+          <p>Config-Schema finalisieren, PEF-Code hinter Config-Flag abstrahieren, Dokumentation für eigene Backend-Integration, Repository aus privater Entwicklung in öffentliches GitHub-Repo überführen, MIT-Lizenz, Contributing-Guide</p>
+        </div>
+      </li>
+      <li class="phase-item">
+        <div class="phase-badge">Phase 5<br>ML</div>
+        <div class="phase-content">
+          <h4>Machine Learning (optional)</h4>
+          <p>Create ML Modell für Tremor-Klassifizierung, Bradykinese-Erkennung, SpO2 on-demand, iOS Companion-App mit Konfigurationsinterface</p>
+        </div>
+      </li>
+    </ul>
+
+    <h3>MVP Checkliste</h3>
+    <ul class="checklist">
+      <li>Xcode-Projektstruktur aufsetzen (WatchLogger + Companion)</li>
+      <li>SwiftUI: Pairing-Screen (Nonce-Anzeige + Polling)</li>
+      <li>SwiftUI: 2×2 Button-Grid (konfigurierbares Layout)</li>
+      <li>PEF Pairing-Flow: Nonce → JWT → Keychain</li>
+      <li>POST /api/logs mit Bearer-Token-Auth</li>
+      <li>SwiftData EventQueue (Offline-Buffer)</li>
+      <li>SyncEngine: URLSession Background + Retry</li>
+      <li>GitHub Actions: macOS-14 Runner Build-Workflow</li>
+      <li>AltStore PAL-kompatible IPA (ExportOptions.plist)</li>
+    </ul>
+
+    <!-- 14. Offene Fragen -->
+    <h2 id="fragen">14. Offene Fragen &amp; Community-Input</h2>
+
+    <div class="callout info">
+      <div class="callout-icon">💬</div>
+      <div class="callout-body">
+        <strong>Feedback erwünscht</strong>
+        Dieses Dokument ist eine lebende Spezifikation. Wir freuen uns über Korrekturen, alternative Ansätze und Erfahrungsberichte aus der watchOS-Entwicklungs-Community.
+      </div>
+    </div>
+
+    <ol>
+      <li><strong>Tremor-Schwellwerte:</strong> Welche Amplitude und Frequenz-Grenzwerte sind klinisch validiert für Parkinson vs. physiologischem Tremor? Gibt es public Datasets?</li>
+      <li><strong>Batterie-Impact:</strong> Wie stark belastet 100Hz Accelerometer-Sampling die Watch-Batterie? Erfahrungswerte?</li>
+      <li><strong>AltStore PAL vs. TestFlight:</strong> Gibt es einen Weg TestFlight ohne Store-Einreichung zu nutzen (Ad-hoc Distribution)?</li>
+      <li><strong>CoreML auf älterer Hardware:</strong> Erfahrungen mit on-device Inferenz auf Apple Watch Series 4/5?</li>
+      <li><strong>Backend-Presets:</strong> Würde ein Plugin-System (ähnlich Health Auto Export) Sinn machen — vorbereitete Presets für bekannte Backends?</li>
+      <li><strong>Contributor gesucht:</strong> Swift/watchOS-Entwickler die das Projekt umsetzen oder mitgestalten möchten. Kein Mac vorhanden — GitHub Actions Build-Pipeline ist vorbereitet.</li>
+    </ol>
+
+    <footer>
+      <p><strong>Autor:</strong> Marco Frischkorn · <strong>Datum:</strong> 2026-05-02 · <strong>Lizenz:</strong> MIT (nach Veröffentlichung) · <strong>Entwicklung:</strong> aktuell privates Repository</p>
+      <p style="margin-top:8px">Dieses Dokument ist eine Anforderungsspezifikation, kein fertiges Produkt. Feedback und Beiträge sind ausdrücklich erwünscht.</p>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>
