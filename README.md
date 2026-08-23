@@ -1,5 +1,7 @@
 # PEF Apple Watch Native App — Anforderungsdokument
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Language](https://img.shields.io/badge/language-Swift-informational.svg) ![AI generated](https://img.shields.io/badge/AI-generated-8A2BE2.svg)
+
 **Projekt:** WatchLogger — Universeller Apple Watch Sensor-Logger  
 **Version:** 1.0  
 **Datum:** 2026-05-02  
